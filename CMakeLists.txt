@@ -21,7 +21,7 @@ IF(HDF5_FOUND)
 
     USE_TOOLS log4cplus boost hdf5
     # add all the projects needed, in particular those needed by the converters
-    USE_PROJECTS icetray tableio)
+    USE_PROJECTS icetray dataclasses tableio)
 
   add_subdirectory(private/pybindings)
 

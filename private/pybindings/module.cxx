@@ -22,9 +22,9 @@ namespace bp = boost::python;
 #define I3_REGISTER(r, data, t) BOOST_PP_CAT(register_,t)();
 BOOST_PP_SEQ_FOR_EACH(I3_REGISTRATION_FN_DECL, ~, REGISTER_THESE_THINGS)
 
-I3_PYTHON_MODULE(hdf_writer)
+I3_PYTHON_MODULE(hdfwriter)
 {
-  load_project("libhdf-writer", false);
+  load_project("libhdfwriter", false);
 
   BOOST_PP_SEQ_FOR_EACH(I3_REGISTER, ~, REGISTER_THESE_THINGS);
 }
