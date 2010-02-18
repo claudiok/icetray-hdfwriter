@@ -225,6 +225,12 @@ void I3HDFTable::CreateTable(int& compress) {
    // set the MultiRow attribute
    char ragged = description_->GetIsMultiRow();
    H5LTset_attribute_char ( fileId_, name_.c_str(), "__I3RaggedTable__", &ragged, 1);
+   
+   // finally, free any H5Ts we've created
+   std::vector<hid_t>::iterator hid_it;
+   for (hid_it = fieldHdfTypes.begin(); hid_it != fieldHdfTypes.end(); hid_it++) {
+       H5Tclose(*hid_it);
+   }
 }
 
 /******************************************************************************/
@@ -290,9 +296,8 @@ void I3HDFTable::CreateDescription() {
       // FIXME: set pytype as well
       description->AddField(std::string(field_names[i]),dtype,dtype.size,unit.c_str(),doc.c_str(),array_size);
       
-      // don't release the datatype, as this will invalidate the ID
-      // The I3TableRowDescription holding the ID should release it when it is destroyed
-      // H5Tclose(dtype);
+      // release the member datatype
+      H5Tclose(hdftype);
    }
    H5Tclose(table_dtype);
    
