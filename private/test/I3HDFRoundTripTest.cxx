@@ -14,10 +14,10 @@
 #include <I3Test.h>
 #include <limits.h>
 
-#include <hdf-writer/internals/I3TableRow.h>
-#include <hdf-writer/internals/I3TableRowDescription.h>
-#include <hdf-writer/hdf/I3HDFTableService.h>
-#include <hdf-writer/hdf/I3HDFTable.h>
+#include <tableio/internals/I3TableRow.h>
+#include <tableio/internals/I3TableRowDescription.h>
+#include <hdfwriter/I3HDFTableService.h>
+#include <hdfwriter/I3HDFTable.h>
 
 #include <dataclasses/physics/I3EventHeader.h>
 

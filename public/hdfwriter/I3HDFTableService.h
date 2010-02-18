@@ -12,7 +12,7 @@
 #ifndef	I3HDFTABLESERVICE_H_INCLUDED
 #define I3HDFTABLESERVICE_H_INCLUDED
 
-#include "hdf-writer/internals/I3TableService.h"
+#include "tableio/internals/I3TableService.h"
 
 // hdf5 includes
 #include "H5TA.h"

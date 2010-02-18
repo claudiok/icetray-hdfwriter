@@ -11,9 +11,9 @@
 
 #include <assert.h>
 
-#include "hdf-writer/hdf/I3HDFTable.h"
-#include "hdf-writer/internals/I3TableRow.h"
-#include "hdf-writer/internals/I3TableRowDescription.h"
+#include "hdfwriter/I3HDFTable.h"
+#include "tableio/internals/I3TableRow.h"
+#include "tableio/internals/I3TableRowDescription.h"
 #include "H5Tpublic.h"
 
 /******************************************************************************/

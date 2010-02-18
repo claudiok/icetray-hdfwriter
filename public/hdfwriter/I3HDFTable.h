@@ -12,8 +12,8 @@
 #ifndef	I3HDFTABLE_H_INCLUDED
 #define I3HDFTABLE_H_INCLUDED
 
-#include "hdf-writer/internals/I3Table.h"
-#include "hdf-writer/internals/I3Datatype.h"
+#include "tableio/internals/I3Table.h"
+#include "tableio/internals/I3Datatype.h"
 #include "H5TA.h"
 
 I3_FORWARD_DECLARATION(I3TableService);

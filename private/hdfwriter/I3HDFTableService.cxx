@@ -10,9 +10,9 @@
  */
 
 
-#include "hdf-writer/hdf/I3HDFTableService.h"
-#include "hdf-writer/hdf/I3HDFTable.h"
-#include "hdf-writer/internals/I3TableRowDescription.h"
+#include "hdfwriter/I3HDFTableService.h"
+#include "hdfwriter/I3HDFTable.h"
+#include "tableio/internals/I3TableRowDescription.h"
 
 /******************************************************************************/
 
