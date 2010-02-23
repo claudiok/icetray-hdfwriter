@@ -294,7 +294,7 @@ void I3HDFTable::CreateDescription() {
       doc  = ReadAttributeString(fileId_,name_,osd.str());
 
       // FIXME: set pytype as well
-      description->AddField(std::string(field_names[i]),dtype,dtype.size,unit.c_str(),doc.c_str(),array_size);
+      description->AddField(std::string(field_names[i]),dtype,unit.c_str(),doc.c_str(),array_size);
       
       // release the member datatype
       H5Tclose(hdftype);
