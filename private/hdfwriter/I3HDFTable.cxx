@@ -15,13 +15,16 @@
 #include "tableio/internals/I3TableRow.h"
 #include "tableio/internals/I3TableRowDescription.h"
 
-#include "H5public.h"
+#include "H5Tpublic.h"
+
 #if (H5_VERS_MAJOR >= 1)&&(H5_VERS_MINOR >= 8)
-	#include "H5Tpublic.h"
 	#include "hdf5_hl.h"
 #else
 	#include "H5TA.h"
 #endif
+
+#include "H5Dpublic.h"
+#include "H5Gpublic.h"
 
 /******************************************************************************/
 

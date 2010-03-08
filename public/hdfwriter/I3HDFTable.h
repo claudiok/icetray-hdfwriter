@@ -15,13 +15,6 @@
 #include "tableio/internals/I3Table.h"
 #include "tableio/internals/I3Datatype.h"
 
-#include "H5public.h"
-#if (H5_VERSION_MAJOR >= 1)&&(H5_VERSION_MINOR >= 8)
-	#include "H5Tpublic"
-	#include "hdf5_hl.h"
-#else
-	#include "H5TA.h"
-#endif
 #include "H5Ipublic.h"
 
 I3_FORWARD_DECLARATION(I3TableService);
