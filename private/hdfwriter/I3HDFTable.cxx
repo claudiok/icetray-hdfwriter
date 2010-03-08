@@ -17,7 +17,7 @@
 
 #include "H5public.h"
 #if (H5_VERS_MAJOR >= 1)&&(H5_VERS_MINOR >= 8)
-	#include "H5Tpublic"
+	#include "H5Tpublic.h"
 	#include "hdf5_hl.h"
 #else
 	#include "H5TA.h"
