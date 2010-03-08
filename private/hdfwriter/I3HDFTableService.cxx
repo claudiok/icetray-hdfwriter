@@ -133,6 +133,13 @@ I3TablePtr I3HDFTableService::CreateTable(const std::string& tableName,
 
 
 void I3HDFTableService::CloseFile() {
-	log_warn("Closing '%s'. Did I want to do some sanity checks first?",filename_.c_str());
-	H5Fclose(fileId_);
+    log_warn("Closing '%s'. Did I want to do some sanity checks first?",filename_.c_str());
+    std::map<std::string, I3TablePtr>::iterator it;
+    boost::shared_ptr<I3HDFTable> table;
+    for (it = tables_.begin(); it != tables_.end(); it++) {
+        // table = boost::dynamic_pointer_cast<I3HDFTable>(it->second);
+        // table->Flush();
+        it->second->Flush();
+    }
+    H5Fclose(fileId_);
 };

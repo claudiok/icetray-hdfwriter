@@ -35,6 +35,8 @@ class I3HDFTable : public I3Table {
         static I3Datatype GetI3Datatype(hid_t dtype, size_t* arrayLength);
         
         virtual I3TableRowConstPtr ReadRows(size_t start, size_t nrows);
+        
+        virtual void Flush(const size_t nrows = 0);
 
     protected:
         virtual void WriteRows(I3TableRowConstPtr row);
@@ -42,8 +44,14 @@ class I3HDFTable : public I3Table {
         void CreateTable(int& compress);
         void CreateDescription();
         hid_t fileId_;
+        
+    private:
+        I3TableRowPtr writeCache_;
+        void CreateCache();
 
 
     SET_LOGGER("I3HDFTable");
 };
+
+#define CHUNKSIZE 100
 #endif

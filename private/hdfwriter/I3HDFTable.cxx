@@ -35,8 +35,8 @@ I3HDFTable::I3HDFTable(I3TableService& service, const std::string& name,
     fileId_(fileId) {
       indexTable_ = index_table;
       CreateDescription();
-      
-   }
+      CreateCache();
+}
 
 /******************************************************************************/
 
@@ -48,6 +48,14 @@ I3HDFTable::I3HDFTable(I3TableService& service, const std::string& name,
     fileId_(fileId) {
       indexTable_ = index_table;
       CreateTable(compress);
+      CreateCache();
+}
+
+/******************************************************************************/
+
+void I3HDFTable::CreateCache() {
+    writeCache_ = I3TableRowPtr(new I3TableRow(description_,0));
+    writeCache_->reserve(100);
 }
 
 /******************************************************************************/
@@ -179,7 +187,7 @@ void I3HDFTable::CreateTable(int& compress) {
     }
     const char** fieldNames = static_cast<const char**>(&fieldNameVector.front());
 
-    hsize_t nchunks = 100;
+    hsize_t nchunks = CHUNKSIZE;
 
     herr_t status = 
         H5TBmake_table("",                 // TODO: table title -> add to interface
@@ -368,11 +376,19 @@ I3HDFTable::~I3HDFTable() {}
 /******************************************************************************/
 
 void I3HDFTable::WriteRows(I3TableRowConstPtr rows) {
-    const unsigned int nrows = rows->GetNumberOfRows();
+    writeCache_->append(*rows);
+    // only write if buffer is larger than a chunk
+    // FIXME: make chunk length depend on datatype?
+    size_t chunks = writeCache_->GetNumberOfRows()/CHUNKSIZE;
+    if (chunks > 0) Flush(chunks*CHUNKSIZE);
+}
+
+void I3HDFTable::Flush(size_t nrows) {
+    if (nrows == 0) nrows = writeCache_->GetNumberOfRows();
     const size_t rowsize = description_->GetTotalByteSize();
     const size_t* fieldOffsets = &(description_->GetFieldByteOffsets().front());
     const size_t* fieldSizes   = &(description_->GetFieldTypeSizes().front());
-    const void* buffer = rows->GetPointer();
+    const void* buffer = writeCache_->GetPointer();
     herr_t status = 
         H5TBappend_records(fileId_,        // file
                            name_.c_str(),  // data set name
@@ -385,6 +401,8 @@ void I3HDFTable::WriteRows(I3TableRowConstPtr rows) {
         // TODO: better error handling. maybe return the number of successfull
         // written rows and let the service complain if something goes wrong
         log_fatal("failed to append rows to table.");
+    } else {
+        writeCache_->erase(nrows);
     }
 }
 
