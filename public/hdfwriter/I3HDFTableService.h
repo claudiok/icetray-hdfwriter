@@ -15,7 +15,7 @@
 #include "tableio/internals/I3TableService.h"
 
 // hdf5 includes
-#include "H5TA.h"
+#include "H5Ipublic.h"
 
 class I3HDFTableService : public I3TableService {
     public:

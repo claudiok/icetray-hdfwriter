@@ -14,6 +14,16 @@
 #include "hdfwriter/I3HDFTable.h"
 #include "tableio/internals/I3TableRowDescription.h"
 
+#include "H5public.h"
+#if (H5_VERSION_MAJOR >= 1)&&(H5_VERSION_MINOR >= 8)
+	#include "H5Tpublic"
+	#include "H5Gpublic"
+	#include "H5Fpublic"
+	#include "hdf5_hl.h"
+#else
+	#include "H5TA.h"
+#endif
+
 /******************************************************************************/
 
 I3HDFTableService::I3HDFTableService(const std::string& filename, int compress, char mode) :

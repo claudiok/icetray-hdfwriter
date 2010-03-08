@@ -15,6 +15,7 @@ IF(HDF5_FOUND)
 
   # add the path to the place where the hdf5 lib header files exist
   INCLUDE_DIRECTORIES(${HDF5_INCLUDE_DIR})
+  ADD_DEFINITIONS(-DH5_USE_16_API)
 
   i3_add_library(hdfwriter
     private/hdfwriter/*.cxx
