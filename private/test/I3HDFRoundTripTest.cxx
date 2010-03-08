@@ -25,7 +25,8 @@ TEST_GROUP(I3HDFRoundTripTests);
 
 TEST(resurrection) {
    // set up a writer service
-   I3TableServicePtr writer_service = I3TableServicePtr(new I3HDFTableService("foo.hd5"));
+  const std::string filename = "I3HDFRoundTripTest.hd5";
+   I3TableServicePtr writer_service = I3TableServicePtr(new I3HDFTableService(filename));
 
    // build up a data type
    I3TableRowDescriptionPtr desc = I3TableRowDescriptionPtr(new I3TableRowDescription());
@@ -83,7 +84,7 @@ TEST(resurrection) {
    writer_service->Finish();
    
    // reopen the file for reading
-   I3TableServicePtr reader_service = I3TableServicePtr(new I3HDFTableService("foo.hd5",1,'r'));
+   I3TableServicePtr reader_service = I3TableServicePtr(new I3HDFTableService(filename,1,'r'));
    
    // convention: desc = NULL => only return table if it exists on disk
    I3TablePtr zombie_table = reader_service->GetTable("paso_double",I3TableRowDescriptionPtr());
