@@ -26,6 +26,9 @@
 #include "H5Dpublic.h"
 #include "H5Gpublic.h"
 
+// customize table creation
+#include "hdf5_opt.h"
+
 /******************************************************************************/
 
 // If no description provided, read one from the table on disk
@@ -35,6 +38,7 @@ I3HDFTable::I3HDFTable(I3TableService& service, const std::string& name,
     fileId_(fileId) {
       indexTable_ = index_table;
       CreateDescription();
+      CalculateChunkSize();
       CreateCache();
 }
 
@@ -47,6 +51,7 @@ I3HDFTable::I3HDFTable(I3TableService& service, const std::string& name,
     I3Table(service, name, description),
     fileId_(fileId) {
       indexTable_ = index_table;
+      CalculateChunkSize();
       CreateTable(compress);
       CreateCache();
 }
@@ -55,7 +60,23 @@ I3HDFTable::I3HDFTable(I3TableService& service, const std::string& name,
 
 void I3HDFTable::CreateCache() {
     writeCache_ = I3TableRowPtr(new I3TableRow(description_,0));
-    writeCache_->reserve(100);
+    writeCache_->reserve(CHUNKTIMES*chunkSize_);
+}
+
+
+/******************************************************************************/
+
+// Calculate the number of rows 
+void I3HDFTable::CalculateChunkSize() {
+    size_t byteSize = 0;
+    const std::vector<I3Datatype>& fieldI3Datatypes = description_->GetFieldTypes();
+    const std::vector<size_t>& fieldArrayLengths = description_->GetFieldArrayLengths();
+    std::vector<I3Datatype>::const_iterator it;
+    std::vector<size_t>::const_iterator as_it;
+    
+    for (it = fieldI3Datatypes.begin(), as_it = fieldArrayLengths.begin(); it != fieldI3Datatypes.end(); it++, as_it++) byteSize += (it->size)*(*as_it);
+    chunkSize_ = size_t(CHUNKSIZE_BYTES)/byteSize;
+    log_trace("%s Chunk shape is %zu",log_label().c_str(),chunkSize_);
 }
 
 /******************************************************************************/
@@ -187,10 +208,8 @@ void I3HDFTable::CreateTable(int& compress) {
     }
     const char** fieldNames = static_cast<const char**>(&fieldNameVector.front());
 
-    hsize_t nchunks = CHUNKSIZE;
-
     herr_t status = 
-        H5TBmake_table("",                 // TODO: table title -> add to interface
+        I3H5TBmake_table("",                 // TODO: table title -> add to interface
                        fileId_,            // hdf5 file opened by writer service 
                        name_.c_str(),      // name of the data set
                        nfields,            // number of table fiels
@@ -199,7 +218,7 @@ void I3HDFTable::CreateTable(int& compress) {
                        fieldNames,         // table field names
                        fieldOffsets,       // struct offsets
                        fieldTypes,         // field types
-                       nchunks,         // write data in chunks of ...
+                       (hsize_t)chunkSize_,         // write data in chunks of ...
                        NULL,            // fill data to be written at creation
                        compress,        // compress flag
                        NULL);              // data to be written at creation  
@@ -375,16 +394,26 @@ I3HDFTable::~I3HDFTable() {}
 
 /******************************************************************************/
 
+std::string I3HDFTable::log_label() {
+    std::string name = name_;
+    if (!indexTable_) name += "(index)";
+    return name;
+}
+
 void I3HDFTable::WriteRows(I3TableRowConstPtr rows) {
     writeCache_->append(*rows);
     // only write if buffer is larger than a chunk
     // FIXME: make chunk length depend on datatype?
-    size_t chunks = writeCache_->GetNumberOfRows()/CHUNKSIZE;
-    if (chunks > 0) Flush(chunks*CHUNKSIZE);
+    size_t chunks = writeCache_->GetNumberOfRows()/chunkSize_;
+    // log_trace("%s Write cache contains %zu rows (%zu %zu-row chunks)",log_label().c_str(),writeCache_->GetNumberOfRows(),chunks,chunkSize_);
+    if (chunks >= CHUNKTIMES) Flush(chunks*chunkSize_);
 }
 
 void I3HDFTable::Flush(size_t nrows) {
+    log_trace("%s Flushing %zu rows from %zu-row cache",log_label().c_str(),nrows,writeCache_->GetNumberOfRows());
     if (nrows == 0) nrows = writeCache_->GetNumberOfRows();
+    if (nrows == 0) return;
+    
     const size_t rowsize = description_->GetTotalByteSize();
     const size_t* fieldOffsets = &(description_->GetFieldByteOffsets().front());
     const size_t* fieldSizes   = &(description_->GetFieldTypeSizes().front());

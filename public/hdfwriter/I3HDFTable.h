@@ -47,11 +47,15 @@ class I3HDFTable : public I3Table {
         
     private:
         I3TableRowPtr writeCache_;
+        size_t chunkSize_;
         void CreateCache();
+        void CalculateChunkSize();
+        std::string log_label();
 
 
     SET_LOGGER("I3HDFTable");
 };
 
-#define CHUNKSIZE 100
+#define CHUNKSIZE_BYTES 131072
+#define CHUNKTIMES 8
 #endif

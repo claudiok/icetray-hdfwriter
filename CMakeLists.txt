@@ -19,6 +19,7 @@ IF(HDF5_FOUND)
 
   i3_add_library(hdfwriter
     private/hdfwriter/*.cxx
+    private/hdfwriter/*.c
 
     USE_TOOLS log4cplus boost hdf5
     # add all the projects needed, in particular those needed by the converters
