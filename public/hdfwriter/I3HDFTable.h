@@ -34,13 +34,13 @@ class I3HDFTable : public I3Table {
         static hid_t GetHDFType(const I3Datatype& dtype, const size_t arrayLength);
         static I3Datatype GetI3Datatype(hid_t dtype, size_t* arrayLength);
         
-        virtual I3TableRowConstPtr ReadRows(size_t start, size_t nrows);
+        virtual I3TableRowConstPtr ReadRows(size_t start, size_t nrows) const;
         
         virtual void Flush(const size_t nrows = 0);
 
     protected:
         virtual void WriteRows(I3TableRowConstPtr row);
-        virtual std::pair<unsigned int,unsigned int> GetRangeForEvent(unsigned int index);
+        virtual std::pair<size_t,size_t> GetRangeForEvent(size_t index) const;
         void CreateTable(int& compress);
         void CreateDescription();
         hid_t fileId_;
@@ -56,6 +56,9 @@ class I3HDFTable : public I3Table {
     SET_LOGGER("I3HDFTable");
 };
 
+// Data will be written in chunks of this size (128 kB)
+// see http://www.pytables.org/docs/manual/ch05.html
 #define CHUNKSIZE_BYTES 131072
+// Buffer this many chunks before writing
 #define CHUNKTIMES 8
 #endif

@@ -66,7 +66,7 @@ void I3HDFTable::CreateCache() {
 
 /******************************************************************************/
 
-// Calculate the number of rows 
+// Calculate the number of rows in a data chunk
 void I3HDFTable::CalculateChunkSize() {
     size_t byteSize = 0;
     const std::vector<I3Datatype>& fieldI3Datatypes = description_->GetFieldTypes();
@@ -87,7 +87,7 @@ hid_t I3HDFTable::GetHDFType(const I3Datatype& dtype, const size_t arrayLength) 
     std::vector<std::pair<std::string,long> >::const_iterator enum_it;
     switch (dtype.kind) {
         case I3Datatype::Bool:
-            // do nothing
+            // fall through to integers (just like C, there is no native HDF5 bool)
         case I3Datatype::Int:
             hdftype = H5Tcopy(H5T_NATIVE_INT);
             H5Tset_size(hdftype,dtype.size);
@@ -199,7 +199,7 @@ void I3HDFTable::CreateTable(int& compress) {
     }
     const hid_t* fieldTypes    = &(fieldHdfTypes.front());
   
-    // converter field name strings into char**
+    // convert field name strings into char**
     std::vector<const char*> fieldNameVector;
     const std::vector<std::string>& nameStrings = description_->GetFieldNames();
     std::vector<std::string>::const_iterator iter;
@@ -209,19 +209,19 @@ void I3HDFTable::CreateTable(int& compress) {
     const char** fieldNames = static_cast<const char**>(&fieldNameVector.front());
 
     herr_t status = 
-        I3H5TBmake_table("",                 // TODO: table title -> add to interface
-                       fileId_,            // hdf5 file opened by writer service 
-                       name_.c_str(),      // name of the data set
-                       nfields,            // number of table fiels
-                       0,                  // number of records writen at creation
-                       structSize,         // size of the struct
-                       fieldNames,         // table field names
-                       fieldOffsets,       // struct offsets
-                       fieldTypes,         // field types
-                       (hsize_t)chunkSize_,         // write data in chunks of ...
-                       NULL,            // fill data to be written at creation
-                       compress,        // compress flag
-                       NULL);              // data to be written at creation  
+        I3H5TBmake_table("",                // TODO: table title -> add to interface
+                       fileId_,             // hdf5 file opened by writer service 
+                       name_.c_str(),       // name of the data set
+                       nfields,             // number of table fiels
+                       0,                   // number of records writen at creation
+                       structSize,          // size of the struct
+                       fieldNames,          // table field names
+                       fieldOffsets,        // struct offsets
+                       fieldTypes,          // field types
+                       (hsize_t)chunkSize_, // write data in chunks of ...
+                       NULL,                // fill data to be written at creation
+                       compress,            // compression level
+                       NULL);               // data to be written at creation  
     if (status < 0) {
         log_fatal("Couln't create table");
         //TODO maybe just set tableCreated_=false and let the service handle the problem?
@@ -236,7 +236,6 @@ void I3HDFTable::CreateTable(int& compress) {
    std::vector<std::string>::const_iterator it_unit;
    std::vector<std::string>::const_iterator it_doc;
    unsigned int i;
-   // std::ostringstream osu,osd;
    for (i=0, it_unit = unitStrings.begin(), it_doc = docStrings.begin();
         it_unit != unitStrings.end();
         it_unit++, it_doc++, i++) {
@@ -269,13 +268,6 @@ void I3HDFTable::CreateTable(int& compress) {
        H5Tclose(*hid_it);
    }
 }
-
-/******************************************************************************/
-
-// Find the corresponding index table
-// void I3HDFTable::FindIndexTable() {
-//    
-// }
 
 /******************************************************************************/
 
@@ -330,7 +322,6 @@ void I3HDFTable::CreateDescription() {
       unit = ReadAttributeString(fileId_,name_,osu.str());
       doc  = ReadAttributeString(fileId_,name_,osd.str());
 
-      // FIXME: set pytype as well
       description->AddField(std::string(field_names[i]),dtype,unit.c_str(),doc.c_str(),array_size);
       
       // release the member datatype
@@ -374,7 +365,6 @@ std::string I3HDFTable::ReadAttributeString(hid_t fileID, std::string& where, st
    status = H5LTget_attribute_info(fileID,where.c_str(),attribute.c_str(),&dims,&type_class,&attr_size);
    
    if ((status < 0) || (type_class != H5T_STRING)) {
-      // printf("%s.%s: dims=%d, status=%d\n",where.c_str(),attribute.c_str(),(int)dims,status);
       return val;
    }
    
@@ -403,7 +393,6 @@ std::string I3HDFTable::log_label() {
 void I3HDFTable::WriteRows(I3TableRowConstPtr rows) {
     writeCache_->append(*rows);
     // only write if buffer is larger than a chunk
-    // FIXME: make chunk length depend on datatype?
     size_t chunks = writeCache_->GetNumberOfRows()/chunkSize_;
     // log_trace("%s Write cache contains %zu rows (%zu %zu-row chunks)",log_label().c_str(),writeCache_->GetNumberOfRows(),chunks,chunkSize_);
     if (chunks >= CHUNKTIMES) Flush(chunks*chunkSize_);
@@ -435,29 +424,36 @@ void I3HDFTable::Flush(size_t nrows) {
     }
 }
 
-I3TableRowConstPtr I3HDFTable::ReadRows(size_t start, size_t nrows) {
+I3TableRowConstPtr I3HDFTable::ReadRows(size_t start, size_t nrows) const {
    if (!description_) {
       log_fatal("No I3TableRowDescription is set for this table.");
    }
    I3TableRowPtr rows = I3TableRowPtr(new I3TableRow(description_,nrows));
-   
+   // FIXME: reading every row-group individually is pretty
+   // inefficient for sequential reads of from bits of compressed blocks 
+   // (e.g. with TableTranscriber): come up with some sort of read-buffering scheme
    const size_t rowsize = description_->GetTotalByteSize();
    const size_t* fieldOffsets = &(description_->GetFieldByteOffsets().front());
    const size_t* fieldSizes   = &(description_->GetFieldTypeSizes().front());
    void* buffer = const_cast<void*>(rows->GetPointer());
-   // herr_t status = 
-       H5TBread_records(fileId_,        // file
-                          name_.c_str(),  // data set name
-                          start, // index at which to start reading
-                          nrows, // number of records to read
-                          rowsize,        // size of records in buffer
-                          fieldOffsets,   // struct offsets
-                          fieldSizes,     // size of the fields
-                          buffer);        // where to write data
-   return rows;
+   herr_t status = 
+       H5TBread_records(fileId_,       // file
+                        name_.c_str(), // data set name
+                        start,         // index at which to start reading
+                        nrows,         // number of records to read
+                        rowsize,       // size of records in buffer
+                        fieldOffsets,  // struct offsets
+                        fieldSizes,    // size of the fields
+                        buffer);       // where to write data
+   if (status < 0) {
+       log_error("(%s) error reading rows %zu--%zu",name_.c_str(),start,start+nrows);
+       return I3TableRowPtr();
+   } else {
+       return rows;
+   }
 }
 
-std::pair<unsigned int,unsigned int> I3HDFTable::GetRangeForEvent(unsigned int index) {
+std::pair<size_t,size_t> I3HDFTable::GetRangeForEvent(size_t index) const {
     if (indexTable_) {
         if (index > indexTable_->GetNumberOfRows()-1) {
             return std::pair<unsigned int,unsigned int>(0,0);
@@ -465,12 +461,12 @@ std::pair<unsigned int,unsigned int> I3HDFTable::GetRangeForEvent(unsigned int i
         // FIXME: how to call ReadRows, which is a protected member of the parent class?
         boost::shared_ptr<I3HDFTable> indexTable = boost::static_pointer_cast<I3HDFTable>(indexTable_);
         I3TableRowPtr indexrow = boost::const_pointer_cast<I3TableRow>(indexTable->ReadRows(index,1));
-        unsigned int start = indexrow->Get<unsigned int>("start");
-        unsigned int end = indexrow->Get<unsigned int>("stop");
-        return std::pair<unsigned int,unsigned int>(start,end);
+        size_t start = indexrow->Get<size_t>("start");
+        size_t end = indexrow->Get<size_t>("stop");
+        return std::pair<size_t,size_t>(start,end);
     } else {
         log_fatal("(%s) This table has no index, and is thus write-only.",name_.c_str());
-        return std::pair<unsigned int,unsigned int>();
+        return std::pair<size_t,size_t>();
     }
 }
 
