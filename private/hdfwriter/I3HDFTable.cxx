@@ -91,15 +91,16 @@ hid_t I3HDFTable::GetHDFType(const I3Datatype& dtype, const size_t arrayLength) 
         case I3Datatype::Int:
             hdftype = H5Tcopy(H5T_NATIVE_INT);
             H5Tset_size(hdftype,dtype.size);
+            H5Tset_precision(hdftype,8*dtype.size);
             if (dtype.is_signed) H5Tset_sign(hdftype,H5T_SGN_2);
             else H5Tset_sign(hdftype,H5T_SGN_NONE);
             break;
         case I3Datatype::Float:
-            if (dtype.size == 4) {
+            if (dtype.size == sizeof(float)) {
                 hdftype = H5Tcopy(H5T_NATIVE_FLOAT);
-            } else if (dtype.size == 8) {
+            } else if (dtype.size == sizeof(double)) {
                 hdftype = H5Tcopy(H5T_NATIVE_DOUBLE);
-            } else if (dtype.size == 16) {
+            } else if (dtype.size == sizeof(long double)) {
                 hdftype = H5Tcopy(H5T_NATIVE_LDOUBLE);
             } else {
                 log_fatal("I don't know what do with %ld-byte floats.",dtype.size);
