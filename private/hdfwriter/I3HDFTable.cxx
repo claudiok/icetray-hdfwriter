@@ -109,6 +109,7 @@ hid_t I3HDFTable::GetHDFType(const I3Datatype& dtype, const size_t arrayLength) 
         case I3Datatype::Enum:
             hdftype = H5Tcopy(H5T_NATIVE_INT);
             H5Tset_size(hdftype,dtype.size);
+            H5Tset_precision(hdftype,8*dtype.size);
             if (dtype.is_signed) H5Tset_sign(hdftype,H5T_SGN_2);
             else H5Tset_sign(hdftype,H5T_SGN_NONE);
             hid_t enumtype = H5Tenum_create(hdftype);
