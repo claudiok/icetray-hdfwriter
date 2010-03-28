@@ -37,6 +37,8 @@ I3HDFTable::I3HDFTable(I3TableService& service, const std::string& name,
     I3Table(service, name, I3TableRowDescriptionPtr()),
     fileId_(fileId) {
       indexTable_ = index_table;
+      if (indexTable_) nevents_ = indexTable_->GetNumberOfRows();
+      else nevents_ = 0;
       CreateDescription();
       CalculateChunkSize();
       CreateCache();
