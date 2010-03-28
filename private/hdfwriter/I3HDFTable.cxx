@@ -283,6 +283,10 @@ void I3HDFTable::CreateDescription() {
    hsize_t nfields,nrecords,i;
    H5TBget_table_info(fileId_,name_.c_str(),&nfields,&nrecords);
    
+   // note how many rows this table contains
+   nrows_ = nrecords;
+   nrowsWithPadding_ = nrecords;
+   
    // grab the table's compound datatype
    hid_t dset_id = H5Dopen(fileId_,name_.c_str());
    hid_t table_dtype = H5Dget_type(dset_id);
@@ -426,7 +430,7 @@ void I3HDFTable::Flush(size_t nrows) {
     }
 }
 
-I3TableRowConstPtr I3HDFTable::ReadRows(size_t start, size_t nrows) const {
+I3TableRowPtr I3HDFTable::ReadRowsFromTable(size_t start, size_t nrows) const {
    if (!description_) {
       log_fatal("No I3TableRowDescription is set for this table.");
    }
@@ -453,6 +457,18 @@ I3TableRowConstPtr I3HDFTable::ReadRows(size_t start, size_t nrows) const {
    } else {
        return rows;
    }
+}
+
+I3TableRowConstPtr I3HDFTable::ReadRows(size_t start, size_t nrows) const {
+    if (start < readCacheExtent_.first || start+nrows > readCacheExtent_.second ) {
+        size_t nrows_remaining = std::min(CHUNKTIMES*chunkSize_,nrowsWithPadding_-start);
+        size_t nrows_to_read = std::max(nrows_remaining,nrows);
+        log_trace("Invalidating cache and reading %zu + %zu rows",start,nrows_to_read);
+        readCache_ = ReadRowsFromTable(start,nrows_to_read);
+        readCacheExtent_ = std::make_pair(start,start+nrows_to_read);
+    }
+    size_t cacheStart = start - readCacheExtent_.first;
+    return I3TableRowPtr(new I3TableRow(*readCache_,cacheStart,cacheStart+nrows));
 }
 
 std::pair<size_t,size_t> I3HDFTable::GetRangeForEvent(size_t index) const {

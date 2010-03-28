@@ -47,9 +47,12 @@ class I3HDFTable : public I3Table {
         
     private:
         I3TableRowPtr writeCache_;
+        mutable I3TableRowPtr readCache_;
+        mutable std::pair<size_t,size_t> readCacheExtent_;
         size_t chunkSize_;
         void CreateCache();
         void CalculateChunkSize();
+        I3TableRowPtr ReadRowsFromTable(size_t start, size_t nrows) const;
         std::string log_label();
 
 
