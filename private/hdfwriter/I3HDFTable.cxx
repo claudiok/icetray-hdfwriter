@@ -85,7 +85,7 @@ void I3HDFTable::CalculateChunkSize() {
 
 // construct an HDF type from an I3Datatype
 hid_t I3HDFTable::GetHDFType(const I3Datatype& dtype, const size_t arrayLength) {
-    hid_t hdftype;
+    hid_t hdftype=0;
     std::vector<std::pair<std::string,long> >::const_iterator enum_it;
     switch (dtype.kind) {
         case I3Datatype::Bool:
@@ -105,21 +105,26 @@ hid_t I3HDFTable::GetHDFType(const I3Datatype& dtype, const size_t arrayLength) 
             } else if (dtype.size == sizeof(long double)) {
                 hdftype = H5Tcopy(H5T_NATIVE_LDOUBLE);
             } else {
-                log_fatal("I don't know what do with %ld-byte floats.",dtype.size);
+                log_fatal("I don't know what do with %zu-byte floats.",dtype.size);
             }
             break;
         case I3Datatype::Enum:
-            hdftype = H5Tcopy(H5T_NATIVE_INT);
-            H5Tset_size(hdftype,dtype.size);
-            H5Tset_precision(hdftype,8*dtype.size);
-            if (dtype.is_signed) H5Tset_sign(hdftype,H5T_SGN_2);
-            else H5Tset_sign(hdftype,H5T_SGN_NONE);
-            hid_t enumtype = H5Tenum_create(hdftype);
-            H5Tclose(hdftype);
-            hdftype = enumtype;
-            for (enum_it = dtype.enum_members.begin(); enum_it != dtype.enum_members.end(); enum_it++) {
-                H5Tenum_insert(hdftype,enum_it->first.c_str(),&(enum_it->second));
+            {
+                hdftype = H5Tcopy(H5T_NATIVE_INT);
+                H5Tset_size(hdftype,dtype.size);
+                H5Tset_precision(hdftype,8*dtype.size);
+                if (dtype.is_signed) H5Tset_sign(hdftype,H5T_SGN_2);
+                else H5Tset_sign(hdftype,H5T_SGN_NONE);
+                hid_t enumtype = H5Tenum_create(hdftype);
+                H5Tclose(hdftype);
+                hdftype = enumtype;
+                for (enum_it = dtype.enum_members.begin(); enum_it != dtype.enum_members.end(); enum_it++) {
+                    H5Tenum_insert(hdftype,enum_it->first.c_str(),&(enum_it->second));
+                }
             }
+            break;     
+        default:
+            log_fatal("I don't know what do with datatype %d.",dtype.kind);
             break;     
     }
     if (arrayLength > 1) {
