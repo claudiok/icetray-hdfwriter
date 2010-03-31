@@ -36,6 +36,7 @@ class I3HDFTableService : public I3TableService {
         hid_t indexGroupId_;
         std::string filename_;
         int compress_;
+        bool fileOpen_;
 
     SET_LOGGER("I3HDFTableService");
 };

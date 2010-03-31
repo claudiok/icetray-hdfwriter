@@ -30,7 +30,8 @@
 I3HDFTableService::I3HDFTableService(const std::string& filename, int compress, char mode) :
     I3TableService(),
     filename_(filename),
-    compress_(compress)
+    compress_(compress),
+    fileOpen_(false)
     // tables_()
     {
     if ( mode == 'w') { 
@@ -40,6 +41,7 @@ I3HDFTableService::I3HDFTableService(const std::string& filename, int compress, 
                                         // - standard setting
                          H5P_DEFAULT);  // file access property 
                                         // - standard setting
+    fileOpen_ = true;
     rootGroupId_ = H5Gopen(fileId_,"/");
     indexGroupId_ = H5Gcreate(rootGroupId_,"__I3Index__",1024);
    } else if ( mode == 'r' ) {
@@ -49,6 +51,7 @@ I3HDFTableService::I3HDFTableService(const std::string& filename, int compress, 
       if (fileId_ < 0) {
          log_fatal("Could not open HDF file '%s'",filename_.c_str());
       }
+      fileOpen_ = true;
       rootGroupId_ = H5Gopen(fileId_,"/");
       indexGroupId_ = H5Gopen(rootGroupId_,"__I3Index__");
       if (indexGroupId_ < 0) // create the group if it doesn't exist
@@ -134,12 +137,18 @@ I3TablePtr I3HDFTableService::CreateTable(const std::string& tableName,
 
 void I3HDFTableService::CloseFile() {
     log_warn("Closing '%s'. Did I want to do some sanity checks first?",filename_.c_str());
-    std::map<std::string, I3TablePtr>::iterator it;
-    boost::shared_ptr<I3HDFTable> table;
-    for (it = tables_.begin(); it != tables_.end(); it++) {
-        // table = boost::dynamic_pointer_cast<I3HDFTable>(it->second);
-        // table->Flush();
-        it->second->Flush();
+    if (fileOpen_) {
+        std::map<std::string, I3TablePtr>::iterator it;
+        boost::shared_ptr<I3HDFTable> table;
+        for (it = tables_.begin(); it != tables_.end(); it++) {
+            // table = boost::dynamic_pointer_cast<I3HDFTable>(it->second);
+            // table->Flush();
+            it->second->Flush();
+        }
+        H5Fclose(fileId_);
+        fileOpen_ = false;
     }
-    H5Fclose(fileId_);
+    else {
+        log_warn("Additional call to CloseFile(). Maybe this should be prevented by the writer!");
+    }
 };
