@@ -59,9 +59,9 @@ class I3HDFTable : public I3Table {
     SET_LOGGER("I3HDFTable");
 };
 
-// Data will be written in chunks of this size (128 kB)
+// Data will be written in chunks of this size (64 kB)
 // see http://www.pytables.org/docs/manual/ch05.html
-#define CHUNKSIZE_BYTES 131072
+#define CHUNKSIZE_BYTES 65535
 // Buffer this many chunks before writing
 #define CHUNKTIMES 2
 #endif
