@@ -145,6 +145,7 @@ void I3HDFTableService::CloseFile() {
             // table->Flush();
             it->second->Flush();
         }
+	tables_.clear();
         H5Fclose(fileId_);
         fileOpen_ = false;
     }

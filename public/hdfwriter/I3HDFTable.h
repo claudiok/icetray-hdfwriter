@@ -63,5 +63,5 @@ class I3HDFTable : public I3Table {
 // see http://www.pytables.org/docs/manual/ch05.html
 #define CHUNKSIZE_BYTES 131072
 // Buffer this many chunks before writing
-#define CHUNKTIMES 8
+#define CHUNKTIMES 2
 #endif
