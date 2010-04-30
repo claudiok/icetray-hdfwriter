@@ -1,0 +1,86 @@
+.. 
+.. copyright  (C) 2010
+.. The Icecube Collaboration
+.. 
+.. $Id$
+.. 
+.. @version $Revision$
+.. @date $LastChangedDate$
+.. @author Jakob van Santen <vansanten@wisc.edu> $LastChangedBy$
+
+.. highlight:: pycon
+
+hdfwriter
+=================
+
+A tableio plugin for writing HDF5 files.
+
+Usage
+^^^^^^^^
+
+:class:`I3HDFTableService` provides output to HDF5 tables. Use it like any other writer service::
+
+    from icecube import icetray
+    from I3Tray import I3Tray
+    from icecube.tableio import I3TableWriter
+    from icecube.hdfwriter import I3HDFTableService
+    
+    tray = I3Tray()
+    tray.AddModule('I3Reader','reader',filename = 'foo.i3.gz')
+    
+    hdf = I3HDFTableService('foo.hd5')
+    
+    tray.AddModule(I3TableWriter,'writer',
+                   tableservice = hdf,
+                   keys         = ['LineFit','InIceRawData']
+                  )
+                  
+    tray.AddModule('TrashCan','yeswecan')
+    tray.Execute()
+    tray.Finish()
+
+Reading with pytables
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+:class:`I3HDFTableService` creates a flat structure of tables under the file root. Since the HDF5 high-level Table API does not explicitly support units and docstrings, these are stored in the attributes FIELD_N_UNIT and FIELD_N_DOC for each field N. Support for reading these attributes is provided by the :mod:`hdfwriter.pytables_ext` module::
+
+    In [1]: from icecube.hdfwriter import pytables_ext
+    In [2]: import tables
+    In [3]: f=tables.openFile('foo.hdf5')
+    In [4]: f.root.LineFit.coldoc
+    Out[4]: 
+    ['run number',
+     'event number',
+     'object was found in the frame',
+     'x-position of particle',
+     'y-position of particle',
+     'z-position of particle',
+     'origin time of particle',
+     'zenith angle of particle origin',
+     'azimuthal angle of particle origin',
+     'energy of particle',
+     'particle speed',
+     'length of track',
+     '',
+     '',
+     '',
+     '']
+    In [5]: f.root.LineFit.colunits
+    Out[5]: 
+    ['',
+     '',
+     'bool',
+     'm',
+     'm',
+     'm',
+     'ns',
+     'radian',
+     'radian',
+     'GeV',
+     'Gm/s',
+     'm',
+     '',
+     '',
+     '',
+     '']
+
