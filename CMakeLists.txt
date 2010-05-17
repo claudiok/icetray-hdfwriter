@@ -9,7 +9,14 @@ i3_project(hdfwriter
 
 # support HDF5 installations outside of ports
 # this should really be done with an hdf5.cmake in I3_SITE_CMAKE_DIR
-INCLUDE(standalone_hdf5.cmake)
+#
+# TDS May 17, 2010: I just spent a couple hours detangling a user's
+# build due to interactions between this and the I3_PORTS hdf5.  Can
+# we leave this disabled by default?
+option(WITH_SYSTEM_HDF5 "Try to find hdf5 on the system, don't use the ports version" OFF)
+if (WITH_SYSTEM_HDF5)
+  INCLUDE(standalone_hdf5.cmake)
+endif()
 
 IF(HDF5_FOUND)
 
