@@ -7,17 +7,6 @@ i3_project(hdfwriter
 	DOCS_DIR resources/docs
 )
 
-# support HDF5 installations outside of ports
-# this should really be done with an hdf5.cmake in I3_SITE_CMAKE_DIR
-#
-# TDS May 17, 2010: I just spent a couple hours detangling a user's
-# build due to interactions between this and the I3_PORTS hdf5.  Can
-# we leave this disabled by default?
-option(WITH_SYSTEM_HDF5 "Try to find hdf5 on the system, don't use the ports version" OFF)
-if (WITH_SYSTEM_HDF5)
-  INCLUDE(standalone_hdf5.cmake)
-endif()
-
 IF(HDF5_FOUND)
 
   # add the path to the place where the hdf5 lib header files exist
@@ -44,7 +33,9 @@ IF(HDF5_FOUND)
 ELSE(HDF5_FOUND)
 
   MESSAGE(STATUS "*** hdf5 library not found. 
-   *** Ask your admin to install the hdf5 package from IceCube ports.")
+   *** Ask your admin to install the hdf5 package from IceCube ports or 
+       run `cmake -DSYSTEM_PACKAGES` to use the HDF5 libraries and headers
+       packaged with your system.")
   MESSAGE(STATUS "Skipping build of ${PROJECT_NAME}")
 
 ENDIF(HDF5_FOUND)

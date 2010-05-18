@@ -84,3 +84,10 @@ Reading with pytables
      '',
      '']
 
+Using the built-in HDF5 libraries on your system
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+If your system comes with HDF5 libraries, it is better to use the
+system-provided ones rather than those in I3_PORTS, particularly if you're
+using a system-provided build of pytables. You can tell cmake to use the
+system libraries using the :ref:`SYSTEM_PACKAGES` option.
