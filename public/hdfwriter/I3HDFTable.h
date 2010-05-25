@@ -12,8 +12,8 @@
 #ifndef	I3HDFTABLE_H_INCLUDED
 #define I3HDFTABLE_H_INCLUDED
 
-#include "tableio/internals/I3Table.h"
-#include "tableio/internals/I3Datatype.h"
+#include "tableio/I3Table.h"
+#include "tableio/I3Datatype.h"
 
 #include "H5Ipublic.h"
 
