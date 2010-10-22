@@ -1,6 +1,5 @@
 from icecube.load_pybindings import load_pybindings
 import icecube.tableio # pull in direct dependencies
-load_pybindings(__name__, __path__)
 
 import sys
 major,minor = sys.version_info[:2]
@@ -10,3 +9,7 @@ if (major >= 2 and minor >= 4):
 
 # clean the local dictionary
 del sys,major,minor,icecube
+
+load_pybindings(__name__, __path__)
+
+
