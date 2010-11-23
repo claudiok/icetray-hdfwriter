@@ -12,6 +12,7 @@
 #include <assert.h>
 
 #include "hdfwriter/I3HDFTable.h"
+#include "tableio/I3Converter.h"
 #include "tableio/I3TableRow.h"
 #include "tableio/I3TableRowDescription.h"
 
@@ -486,8 +487,8 @@ std::pair<size_t,size_t> I3HDFTable::GetRangeForEvent(size_t index) const {
         // FIXME: how to call ReadRows, which is a protected member of the parent class?
         boost::shared_ptr<I3HDFTable> indexTable = boost::static_pointer_cast<I3HDFTable>(indexTable_);
         I3TableRowPtr indexrow = boost::const_pointer_cast<I3TableRow>(indexTable->ReadRows(index,1));
-        size_t start = indexrow->Get<size_t>("start");
-        size_t end = indexrow->Get<size_t>("stop");
+        size_t start = indexrow->Get<tableio_size_t>("start");
+        size_t end = indexrow->Get<tableio_size_t>("stop");
         return std::pair<size_t,size_t>(start,end);
     } else {
         log_fatal("(%s) This table has no index, and is thus write-only.",name_.c_str());

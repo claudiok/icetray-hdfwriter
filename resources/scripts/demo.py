@@ -58,7 +58,18 @@ def counter(frame):
         print "%d frames"%count
     count +=1
 
-tray.AddModule(tableio.I3TableWriter,'writer', tableservice = tabler)
+# tray.AddModule(tableio.I3TableWriter,'writer1',
+#     tableservice = tabler, keys=['LineFit', 'InIceRawData'], types=[dataclasses.I3Particle])
+
+
+tray.AddModule(tableio.I3TableWriter,'writer1',
+    tableservice = tabler, keys=['LineFit', 'InIceRawData'])
+
+tray.AddModule(tableio.I3TableWriter,'writer2',
+    tableservice = tabler, types=[dataclasses.I3Particle])
+
+
+
 tray.AddModule(counter,'count-count')
 tray.AddModule('TrashCan','yeswecan')
 

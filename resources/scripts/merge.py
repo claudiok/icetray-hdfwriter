@@ -71,4 +71,4 @@ for ctor,args in inservices:
         scribe.Execute()
     inservice.Finish()
 
-outservice.Finish()
+scribe.Finish()
