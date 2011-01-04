@@ -20,6 +20,10 @@
 class I3HDFTableService : public I3TableService {
     public:
         I3HDFTableService(const std::string& filename, int compress=1, char mode='w');
+	I3HDFTableService(const std::string& filename, char mode)
+	{
+		I3HDFTableService(filename, 1, mode);
+	};
         virtual ~I3HDFTableService();
 
     protected:
