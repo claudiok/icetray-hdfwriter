@@ -32,11 +32,10 @@ IF(HDF5_FOUND)
 
 ELSE(HDF5_FOUND)
 
-  MESSAGE(STATUS "*** hdf5 library not found. 
-   *** Ask your admin to install the hdf5 package from IceCube ports or 
+  colormsg(CYAN   "+-- hdf5 library not found, skipping build of ${PROJECT_NAME}") 
+  colormsg(YELLOW "*** Ask your admin to install the hdf5 package from IceCube ports or 
        run `cmake -DSYSTEM_PACKAGES` to use the HDF5 libraries and headers
        packaged with your system.")
-  MESSAGE(STATUS "Skipping build of ${PROJECT_NAME}")
 
 ENDIF(HDF5_FOUND)
 
