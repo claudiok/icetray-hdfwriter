@@ -163,6 +163,7 @@ I3Datatype I3HDFTable::GetI3Datatype(hid_t hdftype, size_t* arrayLength ) {
         case H5T_ENUM:
             dtype.kind = I3Datatype::Enum;
             dtype.size = H5Tget_size(hdftype);
+            dtype.is_signed = (H5Tget_sign(hdftype) == H5T_SGN_2);
             n = H5Tget_nmembers(hdftype);
             dtype.enum_members.reserve(n);
             for (i = 0; i < n; i++) {
