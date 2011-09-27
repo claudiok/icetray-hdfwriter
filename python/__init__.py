@@ -12,7 +12,8 @@ del sys,major,minor
 
 load_pybindings(__name__, __path__)
 
-@icetray.traysegment(parent=tableio.I3TableWriter, removeopts=('TableService',))
+@icetray.traysegment_inherit(tableio.I3TableWriter,
+    removeopts=('TableService',))
 def I3HDFWriter(tray, name, Output=None, **kwargs):
 	"""Tabulate data to an HDF5 file.
 
