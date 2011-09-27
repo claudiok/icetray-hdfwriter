@@ -12,19 +12,15 @@ del sys,major,minor
 
 load_pybindings(__name__, __path__)
 
-@icetray.traysegment
+@icetray.traysegment(parent=tableio.I3TableWriter, removeopts=('TableService',))
 def I3HDFWriter(tray, name, Output=None, **kwargs):
 	"""Tabulate data to an HDF5 file.
 
-	Arguments:
-		Output: Path to output file
-		Keys: Key names of frame objects to tabulate
-		Streams: Subevent streams to include
-		(See I3TableWriter documentation for others)
+	:param Output: Path to output file
 	"""
 	tabler = I3HDFTableService(Output)
 	tray.AddModule(tableio.I3TableWriter, name, TableService=tabler,
 	    **kwargs)
 
 # clean the local dictionary
-del icetray,tableio
+del icetray
