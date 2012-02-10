@@ -14,12 +14,13 @@ load_pybindings(__name__, __path__)
 
 @icetray.traysegment_inherit(tableio.I3TableWriter,
     removeopts=('TableService',))
-def I3HDFWriter(tray, name, Output=None, **kwargs):
+def I3HDFWriter(tray, name, Output=None, CompressionLevel=6, **kwargs):
 	"""Tabulate data to an HDF5 file.
 
 	:param Output: Path to output file
+	:param CompressionLevel: gzip compression to apply to each table
 	"""
-	tabler = I3HDFTableService(Output)
+	tabler = I3HDFTableService(Output, CompressionLevel)
 	tray.AddModule(tableio.I3TableWriter, name, TableService=tabler,
 	    **kwargs)
 

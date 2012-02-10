@@ -122,11 +122,6 @@ TEST(resurrection) {
         osize_it++, zsize_it++, i++) {
             ENSURE_EQUAL( *osize_it, *zsize_it, "Field byte offsets match");
    }
-   for (osize_it  = desc->GetFieldChunkOffsets().begin(), zsize_it = zombie_desc->GetFieldChunkOffsets().begin(), i=0;
-        osize_it != desc->GetFieldChunkOffsets().end();
-        osize_it++, zsize_it++, i++) {
-            ENSURE_EQUAL( *osize_it, *zsize_it, "Field chunk offsets match");
-   }
    for (osize_it  = desc->GetFieldArrayLengths().begin(), zsize_it = zombie_desc->GetFieldArrayLengths().begin(), i=0;
         osize_it != desc->GetFieldArrayLengths().end();
         osize_it++, zsize_it++, i++) {
