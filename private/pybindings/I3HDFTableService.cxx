@@ -17,13 +17,11 @@ namespace bp = boost::python;
 
 
 void register_I3HDFTableService() {
+	
+   typedef bp::init<const std::string&, int, char> ctor;
    bp::class_<I3HDFTableService, 
       boost::shared_ptr<I3HDFTableService>, bp::bases<I3TableService> >
-      ("I3HDFTableService", bp::init<const std::string>(bp::args("filename")))
-      .def(bp::init<const std::string&,int>(bp::args("filename","compression_level")))
-      .def(bp::init<const std::string&,int,char>(bp::args("filename","compression_level","mode")))
-      .def(bp::init<const std::string&,char>(bp::args("filename","mode")))
-
-
-		;
+      ("I3HDFTableService", ctor((bp::args("filename"),
+          bp::arg("compression_level")=1, bp::arg("mode")='w')))
+      ;
 }

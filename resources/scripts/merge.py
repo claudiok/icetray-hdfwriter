@@ -55,7 +55,7 @@ else:
 if oformat == 'hdf5':
 	outservice = I3HDFTableService(outfile,options.compress,'w')
 elif oformat == 'root':
-	outservice = I3ROOTTableService(outfile,options.compress)
+	outservice = I3ROOTTableService(outfile,compression_level=options.compress)
 elif oformat == 'csv':
 	outservice = I3CSVTableService(outfile)
 else:
