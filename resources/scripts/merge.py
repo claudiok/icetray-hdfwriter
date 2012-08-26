@@ -15,12 +15,12 @@
 from optparse import OptionParser
 import os
 
-parser = OptionParser()
+parser = OptionParser(usage='%prog [OPTIONS] FILE1 [FILE2, FILE3, ...] OUTFILE',
+    description='Concatenate tables, optionally converting between supported table formats.')
 parser.add_option("-f","--format",dest="format",help="format to output",default='hdf5')
 parser.add_option("-z","--compress",dest="compress",help="compression level",default=1,type=int)
 parser.add_option("-n","--frames",dest="nframes",help="number of frames to process",default=None,type=int)
 parser.add_option("-o","--output",dest="outfile",help="name of the output file",default=None,type=str)
-
 
 options,args = parser.parse_args()
 if len(args) < 1:
