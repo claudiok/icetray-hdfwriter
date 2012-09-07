@@ -15,7 +15,7 @@
 from optparse import OptionParser
 import os
 
-parser = OptionParser(usage='%prog [OPTIONS] FILE1 [FILE2, FILE3, ...] OUTFILE',
+parser = OptionParser(usage='%prog [OPTIONS] FILE1 [FILE2, FILE3, ...]',
     description='Concatenate tables, optionally converting between supported table formats.')
 parser.add_option("-f","--format",dest="format",help="format to output",default='hdf5')
 parser.add_option("-z","--compress",dest="compress",help="compression level",default=1,type=int)
@@ -30,7 +30,7 @@ infiles = args
 iformat = 'hdf5' # only service that supports reading at this point
 oformat = options.format
 if options.outfile is None:
-    outfile = os.path.basename(infile) + '.' + options.format
+    outfile = os.path.basename(infiles[0]) + '.' + options.format
 else:
     outfile = options.outfile
 
