@@ -1,5 +1,5 @@
 #
-# $Id: CMakeLists.txt 58879 2009-10-15 12:40:18Z panknin $
+# $Id$
 #
 
 i3_project(hdfwriter 

@@ -2,11 +2,11 @@
  * copyright  (C) 2010
  * The Icecube Collaboration
  *
- * $Id: I3TableRowTest.cxx 61494 2010-02-06 02:47:01Z jvansanten $
+ * $Id$
  *
  * @version $Revision$
  * @date $LastChangedDate$
- * @author Jakob van Santen <vansanten@wisc.edu> Last changed by: $LastChangedBy: jvansanten $
+ * @author Jakob van Santen <vansanten@wisc.edu> Last changed by: $LastChangedBy$
  */
 
 
