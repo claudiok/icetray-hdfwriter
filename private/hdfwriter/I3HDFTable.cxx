@@ -77,7 +77,12 @@ void I3HDFTable::CalculateChunkSize() {
     std::vector<I3Datatype>::const_iterator it;
     std::vector<size_t>::const_iterator as_it;
     
-    for (it = fieldI3Datatypes.begin(), as_it = fieldArrayLengths.begin(); it != fieldI3Datatypes.end(); it++, as_it++) byteSize += (it->size)*(*as_it);
+    for (it = fieldI3Datatypes.begin(), as_it = fieldArrayLengths.begin();
+         it != fieldI3Datatypes.end();
+         it++, as_it++)
+      byteSize += (it->size)*(*as_it);
+    if (byteSize == 0)
+      log_fatal("Cowardly refusing to divide by zero!");
     chunkSize_ = size_t(CHUNKSIZE_BYTES)/byteSize;
     log_trace("%s Chunk shape is %zu",log_label().c_str(),chunkSize_);
 }
