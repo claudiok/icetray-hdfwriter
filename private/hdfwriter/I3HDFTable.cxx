@@ -183,7 +183,10 @@ I3Datatype I3HDFTable::GetI3Datatype(hid_t hdftype, size_t* arrayLength ) {
             rank = H5Tget_array_ndims(hdftype);
             if (rank != 1) log_fatal("Rank of array is %d. This is deeply screwy!",rank);
             H5Tget_array_dims(hdftype,&array_size,&perm);
-            *arrayLength = size_t(array_size);
+            if(arrayLength != NULL)
+              *arrayLength = size_t(array_size);
+            else
+              log_fatal("Cowardly refusing to work with a NULL pointer");
             break;
         default:
             log_fatal("Unknown HDF type class %d.",(int)H5Tget_class(hdftype));
