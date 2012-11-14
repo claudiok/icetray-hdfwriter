@@ -17,7 +17,7 @@ IF(HDF5_FOUND)
     private/hdfwriter/*.cxx
     private/hdfwriter/*.c
 
-    USE_TOOLS log4cplus boost hdf5
+    USE_TOOLS boost hdf5
     # add all the projects needed, in particular those needed by the converters
     USE_PROJECTS icetray dataclasses tableio)
 
