@@ -31,16 +31,10 @@ from icecube import icetray,dataclasses,dataio,tableio
 from I3Tray import I3Tray
 
 if options.format == 'hdf5':
-	try:
-		from icecube import hdfwriter
-	except ImportError:
-		raise "Couldn't find the HDF writer service"
+	from icecube import hdfwriter
 	tabler = hdfwriter.I3HDFTableService(outfile,options.compression)
 elif options.format == 'root':
-	try:
-		from icecube import rootwriter
-	except ImportError:
-		raise "Couldn't find the ROOT writer service"
+	from icecube import rootwriter
 	tabler = rootwriter.I3ROOTTableService(outfile,options.compression)
 elif options.format == 'csv':
 	tabler = tableio.I3CSVTableService(outfile[:-4] + '_csv')
