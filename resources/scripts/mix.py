@@ -95,9 +95,9 @@ if __name__ == "__main__":
 		os.unlink(tmp)
 	
 	if len(copied) == 0:
-		print 'All tables present in output; nothing copied.'
+		print('All tables present in output; nothing copied.')
 	else:
-		print 'Copied %d datasets:' % len(copied)
+		print('Copied %d datasets:' % len(copied))
 		for fn, path, size in copied:
-			print '    %s (%d rows) from %s' % (path, size, fn)
+			print('    %s (%d rows) from %s' % (path, size, fn))
 	

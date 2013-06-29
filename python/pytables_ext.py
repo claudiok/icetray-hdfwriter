@@ -40,8 +40,8 @@ if have_pytables:
                 return item[key]
             except KeyError:
                 return default
-        self.colunits = [get(self._v_attrs,'FIELD_%d_UNIT'%i,'') for i in xrange(ncols)]
-        self.coldoc   = [get(self._v_attrs,'FIELD_%d_DOC'%i,'') for i in xrange(ncols)]
+        self.colunits = [get(self._v_attrs,'FIELD_%d_UNIT'%i,'') for i in range(ncols)]
+        self.coldoc   = [get(self._v_attrs,'FIELD_%d_DOC'%i,'') for i in range(ncols)]
         ragged = get(self._v_attrs,'__I3RaggedTable__',None)
         if ragged is not None:
             self.ragged = (ragged[0] != 0)
@@ -61,7 +61,7 @@ if have_pytables:
     @instancemethod(tables.Table)
     def readEvent(self,n):
         if self.I3Index is None:
-            raise TypeError, "This table does not appear to have an index."
+            raise TypeError("This table does not appear to have an index.")
         limits = self.I3Index.read(n)
         if limits['start'] == limits['stop']:
             return numpy.empty(0,dtype=self.description._v_dtype)

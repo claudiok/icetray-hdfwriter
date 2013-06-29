@@ -62,7 +62,7 @@ else:
 	raise "Unknown out format '%s'" % oformat
 
 for ctor,args in inservices:
-    print 'Merging %s'%args[0]
+    print('Merging %s'%args[0])
     inservice = ctor(*args)
     scribe = I3TableTranscriber(inservice,outservice)
     if options.nframes is not None:
