@@ -4,8 +4,8 @@ from icecube import icetray, tableio
 import sys
 major,minor = sys.version_info[:2]
 # pytables only runs on 2.4 anyhow, and this script uses decorators
-if (major >= 2 and minor >= 4):
-    import pytables_ext
+if (major, minor) >= (2, 4):
+    from icecube.hdfwriter import pytables_ext
 
 # clean the local dictionary
 del sys,major,minor
