@@ -30,8 +30,8 @@ IF(HDF5_FOUND)
     USE_PROJECTS dataclasses icetray phys-services hdfwriter tableio)
 
   # Link manipulation scripts into $I3_BUILD/bin for ease of use.
-  execute_process(COMMAND ln -fsn ${CMAKE_CURRENT_SOURCE_DIR}/resources/scripts/merge.py ${EXECUTABLE_OUTPUT_PATH}/hdfwriter-merge)
-  execute_process(COMMAND ln -fsn ${CMAKE_CURRENT_SOURCE_DIR}/resources/scripts/mix.py ${EXECUTABLE_OUTPUT_PATH}/hdfwriter-mix)
+  i3_executable_script(merge resources/scripts/merge.py)
+  i3_executable_script(mix resources/scripts/mix.py)
 
 ELSE(HDF5_FOUND)
 
