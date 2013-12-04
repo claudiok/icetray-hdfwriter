@@ -1,5 +1,5 @@
 from icecube.load_pybindings import load_pybindings
-from icecube import icetray, tableio
+from icecube import icetray, tableio, dataio
 
 import sys
 major,minor = sys.version_info[:2]
@@ -20,6 +20,15 @@ def I3HDFWriter(tray, name, Output=None, CompressionLevel=6, **kwargs):
 	:param Output: Path to output file
 	:param CompressionLevel: gzip compression to apply to each table
 	"""
+	
+	if Output is None:
+		raise ValueError("You must supply an output file name!")
+	
+	# Ready file for staging out if so configured
+	if 'I3FileStager' in tray.context:
+		stager = tray.context['I3FileStager']
+		Output = stager.GetWriteablePath(Output)
+	
 	tabler = I3HDFTableService(Output, CompressionLevel)
 	tray.AddModule(tableio.I3TableWriter, name, TableService=tabler,
 	    **kwargs)

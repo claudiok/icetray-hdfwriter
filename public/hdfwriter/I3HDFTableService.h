@@ -13,17 +13,24 @@
 #define I3HDFTABLESERVICE_H_INCLUDED
 
 #include "tableio/I3TableService.h"
+#include "dataio/I3FileStager.h"
+
+#include <boost/make_shared.hpp>
 
 // hdf5 includes
 #include "H5Ipublic.h"
 
 class I3HDFTableService : public I3TableService {
     public:
-        I3HDFTableService(const std::string& filename, int compress=1, char mode='w');
-	I3HDFTableService(const std::string& filename, char mode)
-	{
-		I3HDFTableService(filename, 1, mode);
-	};
+        I3HDFTableService(I3::dataio::shared_filehandle filename, int compress=1, char mode='w');
+        I3HDFTableService(const std::string& filename, int compress=1, char mode='w')
+        {
+            I3HDFTableService(boost::make_shared<I3::dataio::filehandle>(filename), compress, mode);
+        }
+        I3HDFTableService(const std::string& filename, char mode)
+        {
+            I3HDFTableService(boost::make_shared<I3::dataio::filehandle>(filename), 1, mode);
+        }
         virtual ~I3HDFTableService();
 
     protected:
@@ -38,7 +45,7 @@ class I3HDFTableService : public I3TableService {
         hid_t fileId_;
         hid_t rootGroupId_;
         hid_t indexGroupId_;
-        std::string filename_;
+        I3::dataio::shared_filehandle filename_;
         int compress_;
         bool fileOpen_;
 

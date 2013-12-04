@@ -27,29 +27,33 @@
 
 /******************************************************************************/
 
-I3HDFTableService::I3HDFTableService(const std::string& filename, int compress, char mode) :
+I3HDFTableService::I3HDFTableService(I3::dataio::shared_filehandle filename, int compress, char mode) :
     I3TableService(),
     filename_(filename),
     compress_(compress),
     fileOpen_(false)
     // tables_()
     {
+    if (!filename_)
+        log_fatal("NULL file handle!");
     if ( mode == 'w') { 
-    fileId_ =  H5Fcreate(filename_.c_str(),
+    fileId_ =  H5Fcreate(filename_->c_str(),
                          H5F_ACC_TRUNC, // truncate file if it exits
                          H5P_DEFAULT,   // default meta data creation 
                                         // - standard setting
                          H5P_DEFAULT);  // file access property 
                                         // - standard setting
+    if (fileId_ < 0)
+        log_fatal("Could not create HDF file '%s'",filename_->c_str());
     fileOpen_ = true;
     rootGroupId_ = H5Gopen(fileId_,"/");
     indexGroupId_ = H5Gcreate(rootGroupId_,"__I3Index__",1024);
    } else if ( mode == 'r' ) {
-      fileId_ = H5Fopen(filename_.c_str(),
+      fileId_ = H5Fopen(filename_->c_str(),
                         H5F_ACC_RDONLY,
                         H5P_DEFAULT );
       if (fileId_ < 0) {
-         log_fatal("Could not open HDF file '%s'",filename_.c_str());
+         log_fatal("Could not open HDF file '%s'",filename_->c_str());
       }
       fileOpen_ = true;
       rootGroupId_ = H5Gopen(fileId_,"/");
@@ -142,6 +146,7 @@ void I3HDFTableService::CloseFile() {
         H5Gclose(indexGroupId_);
         H5Fclose(fileId_);
         fileOpen_ = false;
+        filename_.reset();
     }
     else {
         log_warn("Additional call to CloseFile(). Maybe this should be prevented by the writer!");
