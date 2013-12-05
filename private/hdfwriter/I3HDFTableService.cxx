@@ -27,15 +27,13 @@
 
 /******************************************************************************/
 
-I3HDFTableService::I3HDFTableService(I3::dataio::shared_filehandle filename, int compress, char mode) :
-    I3TableService(),
-    filename_(filename),
-    compress_(compress),
-    fileOpen_(false)
-    // tables_()
-    {
-    if (!filename_)
+void
+I3HDFTableService::init(I3::dataio::shared_filehandle filename, int compress, char mode)
+{
+    if (!(filename_ = filename))
         log_fatal("NULL file handle!");
+    compress_ = compress;
+    fileOpen_ = false;
     if ( mode == 'w') { 
     fileId_ =  H5Fcreate(filename_->c_str(),
                          H5F_ACC_TRUNC, // truncate file if it exits
