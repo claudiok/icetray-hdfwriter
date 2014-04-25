@@ -21,7 +21,12 @@ IF(HDF5_FOUND)
     # add all the projects needed, in particular those needed by the converters
     USE_PROJECTS icetray dataio dataclasses tableio)
 
-  add_subdirectory(private/pybindings)
+  i3_add_pybindings(hdfwriter
+    private/pybindings/I3HDFTableService.cxx
+    private/pybindings/module.cxx
+    USE_TOOLS boost python
+    USE_PROJECTS icetray hdfwriter tableio
+    )
 
   # add the path to the place where the hdf5 libs exist
   #TARGET_LINK_LIBRARIES(hdf-writer ${HDF5_LIBRARIES})
