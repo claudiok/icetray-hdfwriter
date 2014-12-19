@@ -24,6 +24,7 @@
 
 #include "H5Gpublic.h"
 #include "H5Fpublic.h"
+#include "H5Ppublic.h"
 
 /******************************************************************************/
 
