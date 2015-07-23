@@ -15,6 +15,11 @@ hdfwriter
 
 A tableio plugin for writing HDF5 files.
 
+.. toctree::
+   :maxdepth: 1
+   
+   release_notes
+
 Usage
 ^^^^^^^^
 

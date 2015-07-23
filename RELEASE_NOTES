@@ -1,11 +1,15 @@
-# $Id: RELEASE_NOTES 130209 2015-03-16 02:20:06Z olivas $
-# $Author: olivas $
-# $Date: 2015-03-15 20:20:06 -0600 (Sun, 15 Mar 2015) $
-#
+.. $Id: RELEASE_NOTES 130209 2015-03-16 02:20:06Z olivas $
+.. $Author: olivas $
+.. $Date: 2015-03-15 20:20:06 -0600 (Sun, 15 Mar 2015) $
+
+Release Notes
+=============
 
 March 15, 2015, Alex Olivas  (olivas@icecube.umd.edu)
 --------------------------------------------------------------------
+
 Release V15-03-00 
-  o Chase header churn in HDF5 1.8.14
+
+* Chase header churn in HDF5 1.8.14
 
 
