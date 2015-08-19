@@ -29,7 +29,6 @@ if have_pytables:
         return patcher
 
     # Add access to units and docstrings at table level
-    # FIXME (TODO): add _v_units or somesuch to tables.Description
     @monkeypatch(tables.Table)
     def _cacheDescriptionData(self):
         self._cacheDescriptionData__unpatched()

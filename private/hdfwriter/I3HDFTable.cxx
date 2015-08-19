@@ -205,7 +205,6 @@ void I3HDFTable::CreateTable(int& compress) {
     const size_t* fieldOffsets = &(description_->GetFieldByteOffsets().front());
     
     // build HDF types from the supplied I3Datatypes
-    // TODO: when should the hid_t's be freed?
     std::vector<hid_t> fieldHdfTypes;
     std::vector<I3Datatype>::const_iterator t_it;
     std::vector<size_t>::const_iterator arraySize_it;
@@ -228,7 +227,7 @@ void I3HDFTable::CreateTable(int& compress) {
     const char** fieldNames = static_cast<const char**>(&fieldNameVector.front());
 
     herr_t status = 
-        I3H5TBmake_table("",                // TODO: table title -> add to interface
+        I3H5TBmake_table("",                // table title
                        fileId_,             // hdf5 file opened by writer service 
                        name_.c_str(),       // name of the data set
                        nfields,             // number of table fiels
@@ -243,7 +242,6 @@ void I3HDFTable::CreateTable(int& compress) {
                        NULL);               // data to be written at creation  
     if (status < 0) {
         log_fatal("Couln't create table");
-        //TODO maybe just set tableCreated_=false and let the service handle the problem?
     }
     else {
         tableCreated_ = true;
@@ -259,7 +257,6 @@ void I3HDFTable::CreateTable(int& compress) {
         it_unit != unitStrings.end();
         it_unit++, it_doc++, i++) {
          
-         // FIXME: is there a kosher way to do this?
          std::ostringstream osu,osd;
          // build attribute names
          osu << "FIELD_" << i << "_UNIT";
@@ -267,12 +264,10 @@ void I3HDFTable::CreateTable(int& compress) {
 
          // set string attributes on the dataset
          if (H5LTset_attribute_string( fileId_, name_.c_str(), osu.str().c_str(), it_unit->c_str() ) < 0)
-               // FIXME: handle errors
-               log_fatal("Couldn't set attribute '%s' = '%s' for dataset '%s'",
+		 log_fatal("Couldn't set attribute '%s' = '%s' for dataset '%s'",
                           osu.str().c_str(),it_unit->c_str(),name_.c_str());
          if (H5LTset_attribute_string( fileId_, name_.c_str(), osd.str().c_str(), it_doc->c_str() ) < 0)
-               // FIXME: handle errors
-               log_fatal("Couldn't set attribute '%s' = '%s' for dataset '%s'",
+		 log_fatal("Couldn't set attribute '%s' = '%s' for dataset '%s'",
                           osd.str().c_str(),it_doc->c_str(),name_.c_str());
       
    }
@@ -323,7 +318,6 @@ void I3HDFTable::CreateDescription() {
    size_t* field_offsets = new size_t[nfields];
    size_t type_size;
       
-   // FIXME: maybe I should just do this all by hand...
    H5TBget_field_info(fileId_,name_.c_str(),field_names,field_sizes,field_offsets,&type_size);
    
    description = I3TableRowDescriptionPtr(new I3TableRowDescription());
@@ -368,8 +362,6 @@ void I3HDFTable::CreateDescription() {
    nrows_ = nrecords;
    nrowsWithPadding_ = nrecords;
    tableCreated_ = true;
-
-   //FIXME: fill lastHeader_, nevents_, etc.
 }
 
 /******************************************************************************/
@@ -439,8 +431,6 @@ void I3HDFTable::Flush(size_t nrows) {
                            fieldSizes, 	   // size of the fields
                            buffer);		   // data to write
     if (status < 0) {
-        // TODO: better error handling. maybe return the number of successfull
-        // written rows and let the service complain if something goes wrong
         log_fatal("failed to append rows to table.");
     } else {
         writeCache_->erase(nrows);
@@ -452,7 +442,7 @@ I3TableRowPtr I3HDFTable::ReadRowsFromTable(size_t start, size_t nrows) const {
       log_fatal("No I3TableRowDescription is set for this table.");
    }
    I3TableRowPtr rows = I3TableRowPtr(new I3TableRow(description_,nrows));
-   // FIXME: reading every row-group individually is pretty
+   // TODO: reading every row-group individually is pretty
    // inefficient for sequential reads of from bits of compressed blocks 
    // (e.g. with TableTranscriber): come up with some sort of read-buffering scheme
    const size_t rowsize = description_->GetTotalByteSize();
@@ -493,7 +483,6 @@ std::pair<size_t,size_t> I3HDFTable::GetRangeForEvent(size_t index) const {
         if (index > indexTable_->GetNumberOfRows()-1) {
             return std::pair<unsigned int,unsigned int>(0,0);
         }
-        // FIXME: how to call ReadRows, which is a protected member of the parent class?
         boost::shared_ptr<I3HDFTable> indexTable = boost::static_pointer_cast<I3HDFTable>(indexTable_);
         I3TableRowPtr indexrow = boost::const_pointer_cast<I3TableRow>(indexTable->ReadRows(index,1));
         size_t start = indexrow->Get<tableio_size_t>("start");
