@@ -1,3 +1,5 @@
+#ifndef HDF5_OPT_H_INCLUDED
+#define HDF5_OPT_H_INCLUDED
 
 #include "hdf5.h"
 
@@ -29,3 +31,5 @@ herr_t I3H5TBmake_table( const char *table_title,
 #ifdef __cplusplus
 }
 #endif
+
+#endif  // HDF5_OPT_H_INCLUDED
