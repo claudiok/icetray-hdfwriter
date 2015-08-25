@@ -96,3 +96,18 @@ If your system comes with HDF5 libraries, it is better to use the
 system-provided ones rather than those in I3_PORTS, particularly if you're
 using a system-provided build of pytables. You can tell cmake to use the
 system libraries using the :ref:`SYSTEM_PACKAGES` option.
+
+Utilities
+^^^^^^^^^
+
+The hdfwriter project provides two utility scripts:
+
+* **hdfwriter-merge** concatenates HDF5 tables and writes them to any of the
+  supported output formats (hdf5, root, or csv)
+
+* **hdfwriter-mix** creates HDF5 files containing the union of all tables in
+  its input files, e.g. if file A.hdf5 contains tables *FooFit* and *BarFit* and file B.hdf5
+  contains *BazFit*, `hdfwriter-mix A.hdf5 B.hdf5 -o C.hdf5` will produce a file with tables
+  *FooFit*, *BarFit*, and *BazFit*.
+
+
