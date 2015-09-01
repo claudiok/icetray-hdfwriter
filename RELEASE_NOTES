@@ -12,6 +12,14 @@ trunk
 March 15, 2015, Alex Olivas  (olivas@icecube.umd.edu)
 --------------------------------------------------------------------
 
+Release V15-08-00 
+
+* Fixed include guards.
+* Updated docs.
+
+March 15, 2015, Alex Olivas  (olivas@icecube.umd.edu)
+--------------------------------------------------------------------
+
 Release V15-03-00 
 
 * Chase header churn in HDF5 1.8.14
