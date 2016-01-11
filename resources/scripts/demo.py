@@ -3,11 +3,11 @@
 # copyright  (C) 2010
 # The Icecube Collaboration
 # 
-# $Id$
+# $Id: demo.py 136437 2015-08-18 22:28:14Z hdembinski $
 # 
-# @version $Revision$
-# @date $LastChangedDate$
-# @author Jakob van Santen <vansanten@wisc.edu> $LastChangedBy$
+# @version $Revision: 136437 $
+# @date $LastChangedDate: 2015-08-18 18:28:14 -0400 (Tue, 18 Aug 2015) $
+# @author Jakob van Santen <vansanten@wisc.edu> $LastChangedBy: hdembinski $
 #
 # Demonstrating how to book data from I3 files.
 

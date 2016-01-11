@@ -3,11 +3,11 @@
 # copyright  (C) 2010
 # The Icecube Collaboration
 # 
-# $Id$
+# $Id: pytables_ext.py 136484 2015-08-19 07:40:07Z jvansanten $
 # 
-# @version $Revision$
-# @date $LastChangedDate$
-# @author Jakob van Santen <vansanten@wisc.edu> Last changed by: $LastChangedBy$
+# @version $Revision: 136484 $
+# @date $LastChangedDate: 2015-08-19 03:40:07 -0400 (Wed, 19 Aug 2015) $
+# @author Jakob van Santen <vansanten@wisc.edu> Last changed by: $LastChangedBy: jvansanten $
 #
 
 try:

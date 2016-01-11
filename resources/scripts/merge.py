@@ -3,11 +3,11 @@
 # copyright  (C) 2010
 # The Icecube Collaboration
 # 
-# $Id$
+# $Id: merge.py 136825 2015-08-25 07:39:27Z jvansanten $
 # 
-# @version $Revision$
-# @date $LastChangedDate$
-# @author Jakob van Santen <vansanten@wisc.edu> Last changed by: $LastChangedBy$
+# @version $Revision: 136825 $
+# @date $LastChangedDate: 2015-08-25 03:39:27 -0400 (Tue, 25 Aug 2015) $
+# @author Jakob van Santen <vansanten@wisc.edu> Last changed by: $LastChangedBy: jvansanten $
 # 
 
 # concatenate tables, keeping track of indexes and such automatically
