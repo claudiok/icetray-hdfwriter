@@ -17,7 +17,8 @@ A tableio plugin for writing HDF5 files.
 
 .. toctree::
    :maxdepth: 1
-   
+
+   FAQ
    release_notes
 
 Usage
