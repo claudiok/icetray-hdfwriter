@@ -33,5 +33,34 @@ def I3HDFWriter(tray, name, Output=None, CompressionLevel=6, **kwargs):
 	tray.AddModule(tableio.I3TableWriter, name, TableService=tabler,
 	    **kwargs)
 
+@icetray.traysegment_inherit(I3HDFWriter)
+def I3SimHDFWriter(tray, name, RunNumber=0, **kwargs):
+	"""
+	Tabulate untriggered data (Q frames only, no event headers)
+	
+	:param RunNumber: run ID to use in made-up headers. This should be unique
+	                  in each file.
+	"""
+
+	if "SubEventStreams" in kwargs:
+		raise ArgumentError("SubEventStreams cannot be set for I3SimHDFWriter")
+
+	from icecube import icetray, dataclasses, phys_services
+	def fake_event_header(frame):
+		header = dataclasses.I3EventHeader()
+		header.run_id = RunNumber
+		header.event_id = fake_event_header.event_id
+		fake_event_header.event_id += 1
+		frame['I3EventHeader'] = header
+	fake_event_header.event_id = 0
+	tray.Add(fake_event_header, Streams=[icetray.I3Frame.DAQ])
+	
+	tray.Add("I3NullSplitter", "nullsplit")
+
+	tray.Add(I3HDFWriter, name, SubEventStreams=["nullsplit"], **kwargs)
+		
+		
+
+
 # clean the local dictionary
 del icetray
