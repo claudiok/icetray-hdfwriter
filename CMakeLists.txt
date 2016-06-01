@@ -19,7 +19,7 @@ IF(HDF5_FOUND)
 
     USE_TOOLS boost hdf5
     # add all the projects needed, in particular those needed by the converters
-    USE_PROJECTS icetray dataio dataclasses tableio)
+    USE_PROJECTS serialization icetray dataio dataclasses tableio)
 
   i3_add_pybindings(hdfwriter
     private/pybindings/I3HDFTableService.cxx
