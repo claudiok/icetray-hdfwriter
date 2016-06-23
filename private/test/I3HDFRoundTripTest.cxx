@@ -13,6 +13,7 @@
 
 #include <I3Test.h>
 #include <limits.h>
+#include <boost/filesystem.hpp>
 
 #include <tableio//I3TableRow.h>
 #include <tableio/I3TableRowDescription.h>
@@ -165,4 +166,6 @@ TEST(resurrection) {
    ENSURE( memcmp(rows->GetPointer(),zombie_rows->GetPointer(),obuffer_size*nrows) == 0, "Written and read buffers are equal, byte for byte.");
 
    reader_service->Finish();
+
+   boost::filesystem::remove(filename);
 }
