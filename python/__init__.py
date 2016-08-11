@@ -55,9 +55,9 @@ def I3SimHDFWriter(tray, name, RunNumber=0, **kwargs):
 	fake_event_header.event_id = 0
 	tray.Add(fake_event_header, Streams=[icetray.I3Frame.DAQ])
 	
-	tray.Add("I3NullSplitter", "nullsplit")
+	tray.Add("I3NullSplitter",SubEventStreamName="SimHDFWriter")
 
-	tray.Add(I3HDFWriter, name, SubEventStreams=["nullsplit"], **kwargs)
+	tray.Add(I3HDFWriter, name, SubEventStreams=["SimHDFWriter"], **kwargs)
 		
 		
 
