@@ -5,6 +5,8 @@
 Release Notes
 =============
 
+* Remove PyTables extensions, as they clash with PyTables 3.3
+
 April 29, 2016, Alex Olivas  (olivas@icecube.umd.edu)
 -----------------------------------------------------
 Release V16-04-00
